@@ -1,0 +1,33 @@
+# Répertoires à exclure
+node_modules
+build
+dist
+coverage
+
+# Fichiers de configuration et journaux
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Fichiers sensibles
+.env
+.env.local
+.env.*.local
+
+# Fichiers et dossiers de versionnement
+.git
+.gitignore
+
+# Fichiers de documentation
+README.md
+LICENSE
+
+# Fichiers Docker
+Dockerfile
+.dockerignore
+
+# Fichiers de l'éditeur
+.vscode
+.idea
+*.swp
