@@ -34,13 +34,19 @@ class Book(db.Model):
 class Student(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(100), nullable=False, unique=True)
+    password = db.Column(db.String(200), nullable=False)  # Pour stocker le hash du mot de passe
     first_name = db.Column(db.String(100), nullable=False)
     last_name = db.Column(db.String(100), nullable=False)
     birth_date = db.Column(db.DateTime)
+    role = db.Column(db.String(20), nullable=False, default='student')  # 'student' ou 'admin'
 
     student_books = relationship("StudentBook", back_populates="student", cascade="all, delete-orphan")
     borrowed_books = relationship("Book", secondary="student_book", viewonly=True)
     reviews = relationship("Review", back_populates="student", cascade="all, delete-orphan")
+
+    @property
+    def name(self):
+        return f"{self.first_name} {self.last_name}"
 
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)

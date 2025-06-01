@@ -1,144 +1,119 @@
-# 📁 Squelette de projet : Flask + React + PostgreSQL
+# ESME Webservice - Système de Gestion de Bibliothèque
 
-Ce projet constitue un **squelette de départ** pour construire une application web full-stack à base de :
+Ce projet est une application web permettant la gestion d'une bibliothèque avec un système de notation et de statistiques.
 
-* **Back-end** : Flask (Python)
-* **Front-end** : React (Vite)
-* **Base de données** : PostgreSQL
+## Fonctionnalités
 
-Le tout est prêt à être exécuté localement via **Docker** et **Docker Compose**.
+- Système d'authentification JWT
+- Gestion des livres (CRUD)
+- Système de notation et d'avis sur les livres
+- Statistiques détaillées (emprunts, notes, genres)
+- Interface utilisateur moderne et réactive
 
----
+## Prérequis
 
-## ✅ Objectif de ce squelette
+- Docker et Docker Compose
+- Node.js (pour le développement frontend)
+- Python 3.8+ (pour le développement backend)
 
-Ce projet est destiné à servir de base pour votre propre développement.
+## Installation
 
-**Ce que vous devez faire :**
-
-1. **Cloner** ce dépôt
-2. **Lancer l'application localement** (voir ci-dessous)
-3. **Construire votre projet** à partir de cette structure
-
----
-
-## ⚡ Prérequis
-
-Avant de commencer, assurez-vous d'avoir installé les outils suivants :
-
-### Pour Windows / MacOS / Linux :
-
-* [Docker Desktop](https://www.docker.com/products/docker-desktop) (inclut Docker + Docker Compose)
-* Git (pour cloner le projet)
-* **Make** (outil pour exécuter des commandes automatisées)
-
-  * Windows : installez via [Chocolatey](https://chocolatey.org/) : `choco install make`
-  * MacOS : inclus avec Xcode : `xcode-select --install`
-  * Linux : `sudo apt install make` (Debian/Ubuntu) ou `sudo dnf install make` (Fedora)
-
-Vous pouvez vérifier leur installation avec :
-
+1. Cloner le repository :
 ```bash
-docker --version
-docker-compose --version
-git --version
-make --version
+git clone https://github.com/ugo-prog/projet-webservice.git
+cd projet-webservice
 ```
 
----
-
-## 🔄 Installation et exécution locale
-
-### 1. Cloner le projet
-
+2. Configurer les variables d'environnement :
 ```bash
-git clone <url-du-repo>
-cd <nom-du-dossier>
+cp backend/.env.example backend/.env
+# Éditer backend/.env avec vos configurations
 ```
 
-### 2. Lancer l'application (backend, frontend et BDD)
-
-```bash
-make docker-build
-```
-
-ou directement :
-
+3. Lancer l'application avec Docker Compose :
 ```bash
 docker-compose up --build
 ```
 
-### 3. Accéder à l'application
+L'application sera accessible sur :
+- Frontend : http://localhost:3000
+- Backend : http://localhost:5000
 
-* Frontend : [http://localhost:3000](http://localhost:3000)
-* Backend API : [http://localhost:5009](http://localhost:5009)
-* Base de données PostgreSQL :
+## Développement
 
-  * Hôte : `localhost`
-  * Port : `5432`
-  * Utilisateur : `myuser`
-  * Mot de passe : `mot_de_passe`
-  * Base : `esme_inge`
-
----
-
-## 🧠 Structure du projet
-
-```
-full-app/
-├── backend/         # Application Flask + DB migrations
-├── frontend/        # Application React (Vite)
-├── docker-compose.yml
-├── Makefile         # Commandes utiles pour dev
-└── README.md
-```
-
----
-
-## 🚀 Commandes utiles (via `make`)
+### Backend (Flask)
 
 ```bash
-make docker-build   # Build et démarre tous les services
-make docker-up      # Démarre sans rebuild
-make docker-down    # Stoppe et supprime les conteneurs
-make db-init        # Init migrations (une seule fois)
-make db-migrate     # Crée une nouvelle migration
-make db-upgrade     # Applique les migrations
-make db-reset       # Supprime + recrée la base
+cd backend
+python -m venv venv
+source venv/bin/activate  # ou `venv\Scripts\activate` sur Windows
+pip install -r requirements.txt
+flask run
 ```
 
----
+### Frontend (React)
 
-## 🛠️ Conseils pour développement
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-* Codez dans `backend/` et `frontend/`
-* Toute modification est automatiquement prise en compte au redémarrage des conteneurs
-* Si erreur base de données : vérifiez les migrations (`make db-upgrade`)
+## Routes API Principales
 
----
+### Livres
+- `GET /api/books` : Liste tous les livres
+- `GET /api/books/<id>` : Détails d'un livre
+- `POST /api/books` : Ajouter un livre
+- `PUT /api/books/<id>` : Modifier un livre
+- `DELETE /api/books/<id>` : Supprimer un livre
 
-## 📊 Problèmes courants
+### Avis
+- `POST /api/reviews/<book_id>` : Créer/modifier un avis
+- `GET /api/reviews/<book_id>` : Liste des avis d'un livre
+- `GET /api/reviews/me` : Avis de l'utilisateur connecté
 
-| Problème                           | Solution                                                                                   |
-| ---------------------------------- | ------------------------------------------------------------------------------------------ |
-| Frontend affiche 404 sur une route | NGINX est configuré pour rediriger vers `index.html`. Assurez-vous que le build est bon.   |
-| Erreur de connexion DB             | Vérifiez si la base est bien démarrée (`docker ps`) et que les migrations sont appliquées. |
-| Port déjà utilisé                  | Modifiez les ports dans `docker-compose.yml`.                                              |
+### Statistiques
+- `GET /api/stats/popular-books` : Top des livres les plus empruntés
+- `GET /api/stats/borrowings-by-genre` : Emprunts par genre
+- `GET /api/stats/top-rated-books` : Meilleurs livres notés
+- `GET /api/stats/borrowings-over-time` : Évolution des emprunts
 
----
+## Comptes de Test
 
-## 🚫 Ce que vous ne devez pas modifier
+- Étudiant :
+  - Email : student@esme.fr
+  - Mot de passe : password123
 
-* Ne changez pas le `docker-compose.yml` sauf si vous comprenez bien les impacts.
-* Ne modifiez pas le `Dockerfile` sans refaire les builds.
+- Admin :
+  - Email : admin@esme.fr
+  - Mot de passe : admin123
 
----
+## Structure du Projet
 
-## 📅 Prochaines étapes
+```
+esme_webservice_full/
+├── backend/
+│   ├── routes/          # Endpoints API
+│   ├── models.py        # Modèles de données
+│   ├── app.py          # Application Flask
+│   └── requirements.txt # Dépendances Python
+├── frontend/
+│   ├── src/
+│   │   ├── components/ # Composants React
+│   │   └── App.jsx    # Application React
+│   └── package.json    # Dépendances Node.js
+└── docker-compose.yml  # Configuration Docker
+```
 
-1. Définissez les routes de votre API Flask
-2. Construisez votre UI React
-3. Ajoutez vos tables et migrations si besoin
-4. Gérez l'authentification si nécessaire
+## Contribution
 
-Bon développement ! 🚀
+1. Fork le projet
+2. Créer une branche (`git checkout -b feature/AmazingFeature`)
+3. Commit les changements (`git commit -m 'Add some AmazingFeature'`)
+4. Push sur la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
+
+## Licence
+
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.

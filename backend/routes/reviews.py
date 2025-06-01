@@ -5,7 +5,7 @@ from datetime import datetime
 
 reviews_bp = Blueprint("reviews", __name__)
 
-@reviews_bp.route("/api/reviews/<int:book_id>", methods=["POST"])
+@reviews_bp.route("/reviews/<int:book_id>", methods=["POST"])
 def create_or_update_review(book_id):
     data = request.get_json()
     student_id = data.get("student_id")
@@ -35,8 +35,8 @@ def create_or_update_review(book_id):
     return jsonify({"message": "Avis enregistré avec succès", "review_id": review.id}), 201
 
 
-# Ajout de l'endpoint GET (GET /api/reviews/<int:book_id>) pour récupérer les avis (et la moyenne des notes) d'un livre (book_id) :
-@reviews_bp.route("/api/reviews/<int:book_id>", methods=["GET"])
+# Ajout de l'endpoint GET (GET /reviews/<int:book_id>) pour récupérer les avis (et la moyenne des notes) d'un livre (book_id) :
+@reviews_bp.route("/reviews/<int:book_id>", methods=["GET"])
 def get_reviews(book_id):
     reviews = Review.query.filter_by(book_id=book_id).all()
     if not reviews:
@@ -47,3 +47,20 @@ def get_reviews(book_id):
         "average_rating": avg_rating,
         "reviews": [{"student_id": r.student_id, "rating": r.rating, "comment": r.comment, "created_at": r.created_at.isoformat() if r.created_at else None, "updated_at": r.updated_at.isoformat() if r.updated_at else None} for r in reviews]
     }), 200
+
+@reviews_bp.route("/reviews/me", methods=["GET"])
+def get_my_reviews():
+    # Récupérer l'ID de l'étudiant depuis le token JWT (à implémenter)
+    # Pour l'instant, on utilise un paramètre de requête
+    student_id = request.args.get('student_id')
+    if not student_id:
+        return jsonify({"error": "student_id est requis"}), 400
+
+    reviews = Review.query.filter_by(student_id=student_id).all()
+    return jsonify([{
+        "book_id": r.book_id,
+        "rating": r.rating,
+        "comment": r.comment,
+        "created_at": r.created_at.isoformat() if r.created_at else None,
+        "updated_at": r.updated_at.isoformat() if r.updated_at else None
+    } for r in reviews]), 200
