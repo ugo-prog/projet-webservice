@@ -23,6 +23,11 @@ cd projet-webservice
 docker-compose up --build
 ```
 
+3. Arreter l'application :
+```bash
+docker-compose down
+```
+
 L'application sera accessible sur :
 - Frontend : http://localhost:3000
 - Backend API : http://localhost:5009
@@ -61,7 +66,6 @@ L'application sera accessible sur :
 - `GET /api/stats/top-rated` : Livres les mieux notés
 
 ## 🛠 Variables d'environnement
-
 Créez un fichier `.env` à la racine du projet avec les variables suivantes :
 
 ```env
