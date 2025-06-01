@@ -1,119 +1,134 @@
-# ESME Webservice - Système de Gestion de Bibliothèque
+# Système de Gestion de Bibliothèque - ESME
 
-Ce projet est une application web permettant la gestion d'une bibliothèque avec un système de notation et de statistiques.
+Application web permettant aux utilisateurs de noter et commenter les livres empruntés, avec des fonctionnalités de statistiques et de visualisation des tendances.
 
-## Fonctionnalités
+## 👥 Membres du groupe
+- [Liste des membres à compléter]
 
-- Système d'authentification JWT
-- Gestion des livres (CRUD)
-- Système de notation et d'avis sur les livres
-- Statistiques détaillées (emprunts, notes, genres)
-- Interface utilisateur moderne et réactive
+## 🚀 Installation
 
-## Prérequis
-
+### Prérequis
 - Docker et Docker Compose
-- Node.js (pour le développement frontend)
-- Python 3.8+ (pour le développement backend)
+- Git
 
-## Installation
-
+### Installation et démarrage
 1. Cloner le repository :
 ```bash
 git clone https://github.com/ugo-prog/projet-webservice.git
 cd projet-webservice
 ```
 
-2. Configurer les variables d'environnement :
-```bash
-cp backend/.env.example backend/.env
-# Éditer backend/.env avec vos configurations
-```
-
-3. Lancer l'application avec Docker Compose :
+2. Lancer l'application :
 ```bash
 docker-compose up --build
 ```
 
 L'application sera accessible sur :
 - Frontend : http://localhost:3000
-- Backend : http://localhost:5000
+- Backend API : http://localhost:5009
 
-## Développement
+## 👤 Comptes de test
 
-### Backend (Flask)
+### Administrateur
+- Email : admin@esme.fr
+- Mot de passe : admin123
 
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # ou `venv\Scripts\activate` sur Windows
-pip install -r requirements.txt
-flask run
-```
+### Étudiant
+- Email : etudiant@esme.fr
+- Mot de passe : student123
 
-### Frontend (React)
+## 📚 Routes API principales
 
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-## Routes API Principales
+### Authentification
+- `POST /api/auth/login` : Connexion
+- `POST /api/auth/register` : Inscription (admin uniquement)
 
 ### Livres
-- `GET /api/books` : Liste tous les livres
+- `GET /api/books` : Liste des livres
 - `GET /api/books/<id>` : Détails d'un livre
-- `POST /api/books` : Ajouter un livre
-- `PUT /api/books/<id>` : Modifier un livre
-- `DELETE /api/books/<id>` : Supprimer un livre
+- `POST /api/books` : Ajouter un livre (admin)
+- `PUT /api/books/<id>` : Modifier un livre (admin)
+- `DELETE /api/books/<id>` : Supprimer un livre (admin)
 
 ### Avis
 - `POST /api/reviews/<book_id>` : Créer/modifier un avis
-- `GET /api/reviews/<book_id>` : Liste des avis d'un livre
+- `GET /api/reviews/book/<book_id>` : Liste des avis d'un livre
 - `GET /api/reviews/me` : Avis de l'utilisateur connecté
 
 ### Statistiques
 - `GET /api/stats/popular-books` : Top des livres les plus empruntés
-- `GET /api/stats/borrowings-by-genre` : Emprunts par genre
-- `GET /api/stats/top-rated-books` : Meilleurs livres notés
-- `GET /api/stats/borrowings-over-time` : Évolution des emprunts
+- `GET /api/stats/borrowings-by-genre` : Emprunts par genre et période
+- `GET /api/stats/top-rated` : Livres les mieux notés
 
-## Comptes de Test
+## 🛠 Variables d'environnement
 
-- Étudiant :
-  - Email : student@esme.fr
-  - Mot de passe : password123
+Créez un fichier `.env` à la racine du projet avec les variables suivantes :
 
-- Admin :
-  - Email : admin@esme.fr
-  - Mot de passe : admin123
+```env
+# Base de données
+POSTGRES_USER=myuser
+POSTGRES_PASSWORD=mot_de_passe
+POSTGRES_DB=esme_inge
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
 
-## Structure du Projet
+# Flask
+FLASK_APP=app.py
+FLASK_ENV=development
+FLASK_DEBUG=1
+SECRET_KEY=votre_cle_secrete_ici
+JWT_SECRET_KEY=votre_jwt_secret_key_ici
 
+# Ports
+BACKEND_PORT=5009
+FRONTEND_PORT=3000
+DATABASE_PORT=5432
+
+# URLs
+API_URL=http://localhost:5009
+FRONTEND_URL=http://localhost:3000
 ```
-esme_webservice_full/
-├── backend/
-│   ├── routes/          # Endpoints API
-│   ├── models.py        # Modèles de données
-│   ├── app.py          # Application Flask
-│   └── requirements.txt # Dépendances Python
-├── frontend/
-│   ├── src/
-│   │   ├── components/ # Composants React
-│   │   └── App.jsx    # Application React
-│   └── package.json    # Dépendances Node.js
-└── docker-compose.yml  # Configuration Docker
-```
 
-## Contribution
+## 📊 Fonctionnalités
 
-1. Fork le projet
-2. Créer une branche (`git checkout -b feature/AmazingFeature`)
-3. Commit les changements (`git commit -m 'Add some AmazingFeature'`)
-4. Push sur la branche (`git push origin feature/AmazingFeature`)
-5. Ouvrir une Pull Request
+### Backend
+- ✅ Authentification JWT
+- ✅ Gestion des livres (CRUD)
+- ✅ Système de notation (1-5 étoiles)
+- ✅ Commentaires sur les livres
+- ✅ Statistiques et agrégations
+- ✅ Sécurité (un utilisateur ne peut noter que ses livres)
 
-## Licence
+### Frontend
+- ✅ Interface de connexion
+- ✅ Liste des livres
+- ✅ Système de notation avec étoiles
+- ✅ Page "Mes avis"
+- ✅ Page statistiques avec graphiques
+- ✅ Interface responsive
 
-Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+## 🐛 Problèmes connus et solutions
+
+1. **Problème de connexion à la base de données**
+   - Solution : Vérifier que PostgreSQL est bien démarré avec `docker ps`
+   - Solution : Attendre que le healthcheck de la base de données soit passé
+
+2. **Erreur d'authentification JWT**
+   - Solution : Vérifier que le token n'est pas expiré
+   - Solution : Se reconnecter pour obtenir un nouveau token
+
+## 📝 Exemple de cas d'usage
+
+1. **Notation d'un livre**
+   - Se connecter avec un compte étudiant
+   - Aller sur la page d'un livre emprunté
+   - Cliquer sur les étoiles pour noter
+   - Ajouter un commentaire optionnel
+   - Sauvegarder l'avis
+
+2. **Visualisation des statistiques**
+   - Se connecter (compte admin ou étudiant)
+   - Aller sur la page "Statistiques"
+   - Consulter les graphiques d'emprunts par genre
+   - Voir le classement des livres les plus populaires
+   - Filtrer par période si nécessaire

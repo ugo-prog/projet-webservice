@@ -24,7 +24,7 @@ def create_test_data():
                     title="L'Étranger",
                     author="Albert Camus",
                     published_at=datetime(1942, 5, 19),
-                    genre="Roman"
+                    genre="Roman philosophique"
                 ),
                 Book(
                     title="Fondation",
@@ -49,26 +49,28 @@ def create_test_data():
             print("L'étudiant n'existe pas")
             return
 
-        # Vérifier si l'étudiant a déjà des emprunts
-        if StudentBook.query.filter_by(student_id=student.id).count() == 0:
-            # Créer des emprunts pour l'étudiant
-            books = Book.query.all()
-            for i, book in enumerate(books[:3]):  # L'étudiant emprunte les 3 premiers livres
-                borrow_date = datetime.now() - timedelta(days=30 - i*10)  # Emprunts échelonnés
-                return_date = None if i == 0 else borrow_date + timedelta(days=15)  # Le premier livre est toujours emprunté
-                
-                borrow = StudentBook(
-                    student_id=student.id,
-                    book_id=book.id,
-                    borrow_date=borrow_date,
-                    return_date=return_date
-                )
-                db.session.add(borrow)
+        # Supprimer les emprunts existants
+        StudentBook.query.filter_by(student_id=student.id).delete()
+        db.session.commit()
+
+        # Créer des emprunts récents pour l'étudiant
+        books = Book.query.all()
+        today = datetime.now()
+        
+        for i, book in enumerate(books[:3]):  # L'étudiant emprunte les 3 premiers livres
+            borrow_date = today - timedelta(days=i*5)  # Emprunts échelonnés sur les 15 derniers jours
+            return_date = None if i == 0 else borrow_date + timedelta(days=3)  # Le premier livre est toujours emprunté
             
-            db.session.commit()
-            print("Emprunts de test créés avec succès")
-        else:
-            print("L'étudiant a déjà des emprunts")
+            borrow = StudentBook(
+                student_id=student.id,
+                book_id=book.id,
+                borrow_date=borrow_date,
+                return_date=return_date
+            )
+            db.session.add(borrow)
+        
+        db.session.commit()
+        print("Emprunts de test créés avec succès")
 
 if __name__ == '__main__':
     create_test_data() 
